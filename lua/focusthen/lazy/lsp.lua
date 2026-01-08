@@ -109,10 +109,10 @@ return {
           vim.lsp.buf.rename()
         end, opts)
         vim.keymap.set("n", "[d", function()
-          vim.diagnostic.jump({ count = 1 })
+          vim.diagnostic.jump({ count = -1, float = true })
         end, opts)
         vim.keymap.set("n", "]d", function()
-          vim.diagnostic.jump({ count = -1 })
+          vim.diagnostic.jump({ count = 1, float = true })
         end, opts)
         vim.keymap.set("n", "<leader>s", vim.lsp.buf.format, opts)
       end,
