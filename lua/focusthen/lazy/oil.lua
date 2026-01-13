@@ -1,7 +1,13 @@
 return {
 	{
 		"stevearc/oil.nvim",
+		lazy = false, -- Load this at startup since it's a file explorer
 		dependencies = { "nvim-tree/nvim-web-devicons" },
+		keys = {
+			{ "-", desc = "Open parent directory" },
+			{ "<leader>pv", desc = "Open parent directory" },
+			{ "<space>-", desc = "Oil float" },
+		},
 		config = function()
 			CustomOilBar = function()
 				local path = vim.fn.expand("%")

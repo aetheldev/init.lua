@@ -1,56 +1,52 @@
 return {
   "mhartington/formatter.nvim",
-  event = "BufWritePre",
+  cmd = { "Format", "FormatWrite" },
+  keys = {
+    { "<leader>s", "<cmd>Format<CR>", mode = { "n", "v" }, desc = "Format with formatter.nvim" },
+  },
   config = function()
     local util = require("formatter.util")
-    local formatter = function(parser)
-      if not parser then
+    
+    local prettier_formatter = function(parser)
+      return function()
+        local file_path = util.get_current_buffer_file_path()
+        if not file_path or file_path == "" then
+          return nil
+        end
+        
+        local abs_path = vim.fn.fnamemodify(file_path, ":p")
+        local args = {
+          "--stdin-filepath",
+          abs_path,
+        }
+        
+        if parser then
+          table.insert(args, "--parser")
+          table.insert(args, parser)
+        end
+        
         return {
           exe = "prettier",
-          args = {
-            "--stdin-filepath",
-            util.escape_path(util.get_current_buffer_file_path()),
-          },
+          args = args,
           stdin = true,
           try_node_modules = true,
         }
       end
-
-      return {
-        exe = "prettier",
-        args = {
-          "--stdin-filepath",
-          util.escape_path(util.get_current_buffer_file_path()),
-          "--parser",
-          parser,
-        },
-        stdin = true,
-        try_node_modules = true,
-      }
     end
 
     require("formatter").setup({
       logging = true,
       log_level = vim.log.levels.WARN,
       filetype = {
-        html = {
-          formatter,
-        },
-        json = {
-          formatter,
-        },
-        jsonc = {
-          formatter,
-        },
-        css = {
-          formatter,
-        },
-        javascript = {
-          formatter,
-        },
-        typescript = {
-          formatter,
-        },
+        html = prettier_formatter(),
+        json = prettier_formatter(),
+        jsonc = prettier_formatter(),
+        css = prettier_formatter(),
+        javascript = prettier_formatter(),
+        typescript = prettier_formatter(),
+        tsx = prettier_formatter("typescript"),
+        typescriptreact = prettier_formatter("typescript"),
+        javascriptreact = prettier_formatter(),
         cs = {
           require("formatter.filetypes.cs").clangformat,
         },

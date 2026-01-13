@@ -57,14 +57,17 @@ return {
     require("mason-tool-installer").setup({
       ensure_installed = ensure_installed,
       run_on_start = false,
+      auto_update = false,
+      start_delay = 5000, -- Wait 5 seconds before checking
     })
     require("mason-lspconfig").setup({
-      automatic_installation = true,
+      automatic_installation = false, -- Don't auto-install missing servers on startup
     })
 
+    -- Defer tool installation check even longer to not block startup
     vim.defer_fn(function()
       require("mason-tool-installer").check_install()
-    end, 1000)
+    end, 5000)
 
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
     vim.lsp.config("*", {
@@ -114,7 +117,7 @@ return {
         vim.keymap.set("n", "]d", function()
           vim.diagnostic.jump({ count = 1, float = true })
         end, opts)
-        vim.keymap.set("n", "<leader>s", vim.lsp.buf.format, opts)
+        vim.keymap.set("n", "<leader>sf", vim.lsp.buf.format, opts)
       end,
     })
   end,

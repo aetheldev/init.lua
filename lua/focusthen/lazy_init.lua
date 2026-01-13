@@ -14,4 +14,21 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     spec = "focusthen.lazy",
     change_detection = { notify = false },
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                "gzip",
+                "matchit",
+                "matchparen",
+                "netrwPlugin",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
+    ui = {
+        border = "rounded",
+    },
 })
